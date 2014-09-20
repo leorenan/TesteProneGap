@@ -1,99 +1,161 @@
 <!DOCTYPE html>
-<!--
-    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
-
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
-        <link href="css/jquery.mobile-1.4.3.min.css" rel="stylesheet" />
-        <script src="js/jquery.min.js"></script>
-        <script src="js/jquery.mobile-1.4.3.min.js"></script>
-    </head>
-    <body>
-        <div id="home" data-role="page" >
-        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
-        		<h1>HOME</h1>
-        	</div>
-            <div data-role="footer" data-position="fixed" data-id="vs_footer">
-            	<div data-role="navbar">
-                    <ul>
-                        <li><a href="#cadastro" data-icon="bars">Cadastro</a></li>
-                        <li><a href="#fotos" data-icon="grid">Fotos</a></li>
-                    </ul>  
-                </div> <!-- Fim do navbar -->              
-            </div> <!-- Fim do footer --> 
-        </div> <!-- Fim da page --> 
-        
-        <div id="fotos" data-role="page">
-        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
-        		<h1>FOTOS</h1>
-                <a href="#home" data-icon="home" data-iconpos="notext">IR PARA HOME</a>
-        	</div>
-            
-            <div data-role="footer" data-position="fixed" data-id="vs_footer">
-            	<div data-role="navbar">
-                    <ul>
-                        <li><a href="#home" data-icon="home">Home</a></li>
-                        <li><a href="#cadastro" data-icon="bars">Cadastro</a></li>
-                        <li><a href="#fotos" data-icon="grid">Fotos</a></li>
-                    </ul>  
-                </div> <!-- Fim do navbar -->              
-            </div> <!-- Fim do footer --> 
-        </div> <!-- Fim da page --> 
-        
-        <div id="cadastro" data-role="page" >
-        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
-        		<h1>CADASTRO</h1>
-                <a href="#home" data-icon="home" data-iconpos="notext">IR PARA HOME</a>
-        	</div>
-            
-            <div data-role="content">
-            	<form>
-                	<label>Nome</label>
-                    <input type="text" id="txtNome" name="txtNome" />
-                    <input type="button" value="SALVAR" id="scan" />
-                </form>
-            </div>
-            
-            <div data-role="footer" data-position="fixed" data-id="vs_footer">
-            	<div data-role="navbar">
-                    <ul>
-                        <li><a href="#home" data-icon="home">Home</a></li>
-                        <li><a href="#cadastro" data-icon="bars">Cadastro</a></li>
-                        <li><a href="#fotos" data-icon="grid">Fotos</a></li>
-                    </ul>  
-                </div> <!-- Fim do navbar -->              
-            </div> <!-- Fim do footer --> 
-        </div> <!-- Fim da page --> 
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="barcodescanner.js"></script>
-        <script type="text/javascript" src="childbrowser.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-    </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, minimum-scale=1, maximum-scale=1">
+<title>Geolocation Maps</title>
+
+<link rel="stylesheet" href="css/jquery.mobile-1.0.1.css" />
+
+<script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.0.1.js"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="js/cordova-1.5.0.js"></script>
+
+<script type="text/javascript">
+	var map;
+	var marker;
+	var infowindow;
+	var watchID;
+
+	$(document).ready(function() {
+		document.addEventListener("deviceready", onDeviceReady, false);
+		//for testing in Chrome browser uncomment
+		//onDeviceReady();
+	});
+
+	//PhoneGap is ready function
+	function onDeviceReady() {
+		$(window).unbind();
+		$(window).bind('pageshow resize orientationchange', function(e) {
+			max_height();
+		});
+		max_height();
+		google.load("maps", "3.8", {
+			"callback" : map,
+			other_params : "sensor=true&language=en"
+		});
+	}
+
+	function max_height() {
+		var h = $('div[data-role="header"]').outerHeight(true);
+		var f = $('div[data-role="footer"]').outerHeight(true);
+		var w = $(window).height();
+		var c = $('div[data-role="content"]');
+		var c_h = c.height();
+		var c_oh = c.outerHeight(true);
+		var c_new = w - h - f - c_oh + c_h;
+		var total = h + f + c_oh;
+		if (c_h < c.get(0).scrollHeight) {
+			c.height(c.get(0).scrollHeight);
+		} else {
+			c.height(c_new);
+		}
+	}
+
+	function map() {
+		var latlng = new google.maps.LatLng(-24.9555, -53.4552);
+		var myOptions = {
+			zoom : 6,
+			center : latlng,
+			streetViewControl : true,
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			zoomControl : true
+		};
+		map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+		google.maps.event.addListenerOnce(map, 'tilesloaded', function() {
+			//get geoposition once
+			//navigator.geolocation.getCurrentPosition(geo_success, geo_error, { maximumAge: 5000, timeout: 5000, enableHighAccuracy: true });
+			//watch for geoposition change
+			watchID = navigator.geolocation.watchPosition(geo_success,
+					geo_error, {
+						maximumAge : 5000,
+						timeout : 5000,
+						enableHighAccuracy : true
+					});
+		});
+	}
+
+	function geo_error(error) {
+		//comment
+		alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+	}
+
+	function geo_success(position) {
+		map.setCenter(new google.maps.LatLng(position.coords.latitude,
+				position.coords.longitude));
+		map.setZoom(15);
+
+		var info = ('Latitude: ' + position.coords.latitude + '<br>'
+				+ 'Longitude: ' + position.coords.longitude + '<br>'
+				+ 'Altitude: ' + position.coords.altitude + '<br>'
+				+ 'Accuracy: ' + position.coords.accuracy + '<br>'
+				+ 'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '<br>'
+				+ 'Heading: ' + position.coords.heading + '<br>'
+				+ 'Speed: ' + position.coords.speed + '<br>' 
+				+ 'Timestamp: ' + new Date(position.timestamp));
+
+		var point = new google.maps.LatLng(position.coords.latitude,
+				position.coords.longitude);
+		if (!marker) {
+			//create marker
+			marker = new google.maps.Marker({
+				position : point,
+				map : map
+			});
+		} else {
+			//move marker to new position
+			marker.setPosition(point);
+		}
+		if (!infowindow) {
+			infowindow = new google.maps.InfoWindow({
+				content : info
+			});
+		} else {
+			infowindow.setContent(info);
+		}
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.open(map, marker);
+		});
+	}
+
+	//fechar do app
+	function exitFromApp(buttonIndex) {
+		if (buttonIndex === 2) {
+			navigator.app.exitApp();
+		}
+	}
+	//confirmar sair do app
+	function showConfirm() {
+		navigator.notification.confirm('Deseja Realmente Sair?', exitFromApp,
+				'Geolocation Map', 'Cancelar,OK' // buttonLabels
+		);
+	}
+</script>
+</head>
+
+<body>
+	<div data-role="page" id="index">
+
+		<!-- header -->
+		<div data-role="header" data-theme="a" >
+			<a data-role="button" data-icon="back" onclick="showConfirm()"
+				data-iconpos="right" class="ui-btn-right">Sair</a>
+			<h3>Geolocation Map</h3>
+		</div>
+
+		<!-- content #Map -->
+		<div data-role="content" style="padding: 0;">
+			<div id="map" style="width: 100%; height: 100%;"></div>
+		</div>
+
+		<!-- footer -->
+		<div data-role="footer" data-theme="a" data-position="fixed">
+			<div align="center" style="font-size: 12px; color: silver;">
+				<p>Localizando...</p>
+			</div>
+		</div>
+	</div>
 </html>
