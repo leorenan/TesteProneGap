@@ -4,10 +4,9 @@ xmlns:gap = "http://phonegap.com/ns/1.0"
 id = "com.phonegapessentials.ex192"
 version = "1.0.0">
 
-  <name>Example 19-3</name>
-  <description>An example application that uses the PhoneGap Geolocation API</description>
-  <author href="http://johnwargo.com"
-  email="john@johnwargo.com">John M. Wargo</author>
+  <name>Porto Street Alert</name>
+  <description>Uma Vida Mais Segura</description>
+  <author >Smart Core</author>
   <gap:platforms>
     <gap:platform name="android" minVersion="2.1" />
     <gap:platform name="webos" />
