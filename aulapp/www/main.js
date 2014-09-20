@@ -19,13 +19,12 @@ function startWatch() {
 
 function onLocationSuccess(loc) {
   alert("onLocationSuccess");
-  //Calculate distance
+	var d = new Date(loc.timestamp);
+	//Then replace the page's content with the current
+	// location retrieved from the API
+	lc.innerHTML = '<b>Current Location</b><hr /><b>Latitude</b>: ' + loc.coords.latitude + '<br /><b>Longitude</b>: ' + loc.coords.longitude + '<br /><b>Altitude</b>: ' + loc.coords.altitude + '<br /><b>Accuracy</b>: ' + loc.coords.accuracy + '<br /><b>Altitude Accuracy</b>: ' + loc.coords.altitudeAccuracy + '<br /><b>Heading</b>: ' + loc.coords.heading + '<br /><b>Speed</b>: ' + loc.coords.speed + '<br /><b>Timestamp</b>: ' + d.toLocaleString();
+  }
 
-  //Calculate heading
-
-  //Update the page
-
-}
 
 function onLocationError(e) {
   alert("Error: #" + e.code + "\n" + e.message);
