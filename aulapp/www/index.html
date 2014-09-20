@@ -1,71 +1,265 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example 19-3</title>
-    <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="jquery.mobile-1.0.css" />
-    <script type="text/javascript" charset="utf-8" src="jquery-1.6.4.js"></script>
-    <script type="text/javascript" charset="utf-8" src="jQueryRotate.2.1.js"></script>
-    <script type="text/javascript" charset="utf-8" src="jquery.mobile-1.0.js"></script>
-    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-    <script type="text/javascript" charset="utf-8" src="main.js"></script>
-    <script type="text/javascript">
-       //Location content
-      var lc;
-      //PhoneGap Ready variable
-      var pgr = false;
-	  
-	  function onBodyLoad() {
-        $('#btnCancel').hide();
-        //During testing, Let me know we got this far
-        alert("onBodyLoad");
-        //Add the PhoneGap deviceready event listener
-        document.addEventListener("deviceready", onDeviceReady, false);
-      }
-
-      function onDeviceReady() {
-        //During testing, Let me know PhoneGap actually
-        // initialized
-        alert("onDeviceReady");
-		//Get a handle we'll use to adjust the accelerometer
-        //content
-        lc = document.getElementById("locationInfo");
-        //Set the variable that lets other parts of the program
-        //know that PhoneGap is initialized
-        pgr = true;
-      }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Untitled Document</title>
+        <link rel="stylesheet" type="text/css" href="css/index.css"/>
+        <link href="css/jquery.mobile-1.4.3.min.css" rel="stylesheet" />
+		<script src="js/jquery.min.js"></script>
+        <script src="js/jquery.mobile-1.4.3.min.js"></script>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <style>
+		html, body {
+		  height: 360px;
+		  margin: 0;
+		  padding: 0;
+		}
+		#map-canvas, #map_canvas {
+		  height: 360px;
+		}
+	</style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+		function initialize() {
+		  var myLatlng = new google.maps.LatLng(-8.0378,-34.9023);
+		  var mapOptions = {
+			zoom: 17,
+			center: myLatlng,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		  }
+		  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+		
+		  var marker = new google.maps.Marker({
+			  position: myLatlng,
+			  map: map,
+			  title: 'Kwai Burger'
+		  });
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-  </head>
-  <body onload="onBodyLoad()">
-    <section id="main" data-role="page">
-      <header data-role="header" data-position="fixed">
-        <h1>Get Me There (ex19-3)</h1>
-      </header>
-      <div data-role="content" class="content">
-        <p>
-          Destination:
-        </p>
-        <label for="editLong">Longitude: </label>
-        <input type="text" name="editLong" value="-81.52" />
-        <br />
-        <label for="editLat">Latitude: </label>
-        <input type="text" name="editLat" value="41.08" />
-        <input type="button" value="Cancel" id="btnCancel" name="btnCancel" onclick="cancelWatch();">
-        <input type="button" value="Start" id="btnStart" name="btnStart" onclick="startWatch();">
-        <label for="editDist">Distance</label>
-        <input type="text" name="editDist" readonly="readonly"/>
-		<p id="locationInfo">
-		  Nothing to see here (yet), click the button.
-		</p>
-        <br />
-        <img src="compass.png" id="compass" alt="compass image" align="middle" />
-      </div>
-      <footer data-role="footer" data-position="fixed">
-        <p>
-          &nbsp;www.phonegapessentials.com
-        </p>
-      </footer>
-    </section>
-  </body>
+    </head>
+    <body>
+    	<div id="home" id="home" data-role="page" role="main">
+        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
+        		<h1>HOME</h1>
+        	</div><!-- Fim do header --> 
+            <div data-role="content">
+            	<div role="main" class="ui-content" id="map-canvas">
+        <!-- map loads here... -->
+    </div>
+                <div class="ui-corner-all custom-corners" data-id="vs_localRecomendado">
+                  <div class="ui-bar ui-bar-b">
+                    <h3>Local Recomendado</h3>
+                  </div>
+                  <div class="ui-body ui-body-a">
+                    <h1>Rua ABCDE</h1>
+                    <a href="#locaisRecomendados" data-icon="arrow-r" data-iconpos="right">
+                        <button role="button" data-icon="arrow-r" data-iconpos="right" >
+                            MAIS
+                        </button>
+                    </a>
+                  </div>
+                </div>
+                <br/>
+                <div data-role="content">
+                    <div class="ui-corner-all custom-corners">
+                      <div class="ui-bar ui-bar-b">
+                        <h3>Estacionamentos Próximos</h3>
+                      </div>
+                      <div class="ui-body ui-body-a" id="listaEstacionamento">
+                        <ul data-role="listview" class="ui-icon-alt"	data-filter="true" data-filter-placeholder="Filtrar dados...">
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide" >
+                                    <h3>MiraPark</h3>
+                                    <p>
+                                        1h - R$ 10,00
+                                        30min - R$ 6,00
+                                        Demais Horas - R$ 4,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>PortoPark</h3>
+                                    <p>
+                                        1h - R$ 16,00
+                                        30min - R$ 10,00
+                                        Demais Horas - R$ 2,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>Estapar</h3>
+                                    <p>
+                                        1h - R$ 10,00
+                                        30min - R$ 6,00
+                                        Demais Horas - R$ 4,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>Brasil Park</h3>
+                                    <p>
+                                        1h - R$ 7,00
+                                        30min - R$ 4,50
+                                        Demais Horas - R$ 3,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>MiraPark</h3>
+                                    <p>
+                                        1h - R$ 10,00
+                                        30min - R$ 6,00
+                                        Demais Horas - R$ 4,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>PortoPark</h3>
+                                    <p>
+                                        1h - R$ 16,00
+                                        30min - R$ 10,00
+                                        Demais Horas - R$ 2,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>Estapar</h3>
+                                    <p>
+                                        1h - R$ 10,00
+                                        30min - R$ 6,00
+                                        Demais Horas - R$ 4,00
+                                    </p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#detalheEstacionamento" data-transition="slide">
+                                    <h3>Brasil Park</h3>
+                                    <p>
+                                        1h - R$ 7,00
+                                        30min - R$ 4,50
+                                        Demais Horas - R$ 3,00
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                      </div>
+                    </div>
+            	</div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-id="vs_footer">            
+            </div> <!-- Fim do footer --> 
+        </div> <!-- Fim da page --> 
+        
+        <div id="locaisRecomendados" data-role="page" >
+        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
+        		<h1>Locais Recomendados	</h1>
+                <a href="#home" data-icon="home" data-iconpos="notext">IR PARA HOME</a>
+        	</div><!-- Fim do header --> 
+            <div data-role="content">
+                <div class="ui-corner-all custom-corners" data-id="vs_localRecomendado">
+                  <div class="ui-bar ui-bar-b">
+                    <h3>Local Recomendado</h3>
+                  </div>
+                  <div class="ui-body ui-body-a">
+                    <div data-role="controlgroup" data-type="vertical">
+                    	<h1>Rua ABCDE</h1>
+                    </div>
+                  </div>
+                </div>
+                <div data-role="content">
+                    <div class="ui-corner-all custom-corners">
+                      <div class="ui-bar ui-bar-b">
+                        <h3>Estacionamentos Próximos</h3>
+                      </div>
+                      <div class="ui-body ui-body-a" id="listaEstacionamento">
+                        <ul data-role="listview" class="ui-icon-alt"	data-filter="true" data-filter-placeholder="Filtrar dados...">
+                            <li>
+                            	<h3>Rua A</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua B</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua C</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua D</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua E</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua F</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua G</h3>
+                            </li>
+                            <li>
+                            	<h3>Rua H</h3>
+                            </li>
+                        </ul>
+                      </div>
+                    </div>
+            	</div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-id="vs_footer">            
+            </div> <!-- Fim do footer --> 
+        </div> <!-- Fim da page --> 
+        
+        <div id="detalheEstacionamento" data-role="page" >
+        	<div data-role="header" data-theme="b" data-position="fixed" data-id="vs_header">
+        		<h1>Estacionamento</h1>
+                <a href="#home" data-icon="home" data-iconpos="notext">IR PARA HOME</a>
+        	</div><!-- Fim do header --> 
+            <div data-role="content">
+                  <h1>MiraPark</h1>
+                  <div class="ui-body ui-body-a">
+                    <h3>Rua ABCDE</h3>
+                    <button role="button" data-icon="minus" data-iconpos="right">Desconto Porto Seguro</button>
+                      <div data-role="content">
+                        <div class="ui-corner-all custom-corners">
+                          <div class="ui-bar ui-bar-b">
+                            <h3>Estacionamentos Próximos</h3>
+                          </div>
+                          <div class="ui-body ui-body-a" id="listaEstacionamento">
+                            <table data-role="table" id="table-column-toggle" data-mode="columntoggle" class="ui-responsive table-stroke">
+                                 <thead>
+                                   <tr>
+                                     <th data-priority="2">Hora</th>
+                                     <th>Preço(R$)</th>
+                                   </tr>
+                                 </thead>
+                                 <tbody>
+                                   <tr>
+                                     <td>1 hora</td>
+                                     <td>10,00</td>
+                                   </tr>
+                                   <tr>
+                                     <td>30 min</td>
+                                     <td>6,00</td>
+                                   </tr>
+                                   <tr>
+                                     <td>Demais Horas</td>
+                                     <td>4,00</td>
+                                   </tr>
+                                </tbody>
+                            </table>
+                          </div>
+                        </div>
+                	</div>
+                </div>
+            </div>
+            <div data-role="footer" data-position="fixed" data-id="vs_footer">            
+            </div> <!-- Fim do footer --> 
+        </div> <!-- Fim da page --> 
+       
+    </body>
 </html>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns = "http://www.w3.org/ns/widgets"
 xmlns:gap = "http://phonegap.com/ns/1.0"
-id = "com.phonegapessentials.ex191"
+id = "com.phonegapessentials.ex192"
 version = "1.0.0">
 
-  <name>Example 19-1</name>
+  <name>Example 19-3</name>
   <description>An example application that uses the PhoneGap Geolocation API</description>
   <author href="http://johnwargo.com"
   email="john@johnwargo.com">John M. Wargo</author>
