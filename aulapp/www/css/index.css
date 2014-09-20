@@ -1,4 +1,11 @@
-#map-page, #map-canvas { width: 100%; height: 100%; padding: 0; }
+html, body {
+		  height: 360px;
+		  margin: 0;
+		  padding: 0;
+		}
+		#map-canvas, #map_canvas {
+		  height: 200px;
+		}
 
 .custom-corners .ui-bar {
   -webkit-border-top-left-radius: inherit;

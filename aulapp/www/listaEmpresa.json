@@ -1,0 +1,54 @@
+[
+    {
+        "Nome": "MiraPark",
+		"Rua": "Rua A",
+		"Latitude": "-23.535029",
+		"Longitude": "-46.644592",
+        "Valores": [
+            {
+                "Descricao": "1h",
+                "Preco": "10,00"
+            },
+            {
+                "Descricao": "30min",
+                "Preco": " 6,00"
+            }
+        ]
+    },
+	{
+        "Nome": "MiraPark",
+		"Rua": "Rua B",
+		"Latitude": "-23.453458",
+		"Longitude": "-46.506067",
+        "Valores": [
+            {
+                "Descricao": "1h",
+                "Preco": "10,00"
+            },
+            {
+                "Descricao": "30min",
+                "Preco": " 6,00"
+            }
+        ]
+    },
+    {
+        "Nome": "Estapar",
+		"Rua": "Rua Z",		
+		"Latitude": "-23.532541",
+		"Longitude": "-46.643832",
+        "Valores": [
+            {
+                "Descricao": "1h",
+                "Preco": "18,00"
+            },
+            {
+                "Descricao": "30min",
+                "Preco": "8,00"
+            },
+            {
+                "Descricao": "Demais Horas",
+                "Preco": "10,00"
+            }
+        ]
+    }
+]

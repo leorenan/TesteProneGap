@@ -16,64 +16,95 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-		document.getElementById('scan').addEventListener('click', this.scan, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+ 
+$(document).bind("mobileinit", function(){
+  $.mobile.ajaxEnabled = true;
+});
+ 
+function onBodyLoad() {
+	document.addEventListener("deviceready", onDeviceReady, true);
+}
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+function onDeviceReady() {
+	//startWatch();
+	carregaEstacionamento();
+	google.maps.event.addDomListener(window, 'load', mapaEstacionamento);
+}
+ 
 
-        console.log('Received Event: ' + id);
-    },
+function carregaEstacionamento(){
+	$.getJSON('http://localhost/hackathon/www/listaEmpresa.json', 
 	
-	scan: function() {
-        console.log('scanning');
-        
-        var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+	function(data) {
+		var listaEstacionamentoHtml = '';
+		
+		$.each(data, function(i, estacionamento) {
+			var jsonEstacionamento = JSON.stringify(estacionamento);
+			
+			listaEstacionamentoHtml += '<li class="ui-first-child ui-last-child" >';
+			listaEstacionamentoHtml += '<a class="ui-btn ui-btn-icon-right ui-icon-carat-r" href="#detalheEstacionamento" onclick=\'mostrarEstacionamento(' + jsonEstacionamento + ');\'  data-transition=\'slide\' >';
+			listaEstacionamentoHtml += '<h3>';
+			listaEstacionamentoHtml += estacionamento.Nome;
+			listaEstacionamentoHtml += '</h3>';
+			listaEstacionamentoHtml += '<p>';
+			var listaValoresHtml = '';
+			var i = 0;
+			$.each(estacionamento.Valores, function(i, valor) {
+				if(i != 0){
+					listaValoresHtml += ' - ';	
+				}
+				
+				listaValoresHtml += valor.Descricao;
+				listaValoresHtml += " ";
+				listaValoresHtml += valor.Preco;
+			
+			})
+			listaEstacionamentoHtml += listaValoresHtml;
+			listaEstacionamentoHtml += '</p>';
+			listaEstacionamentoHtml += '</a>';
+			listaEstacionamentoHtml += '</li>';		
+		});	
+		
+		$('#listaEstacionamento').html(listaEstacionamentoHtml);
+	})
+}
 
-        scanner.scan( function (result) { 
+function mostrarEstacionamento(data) {
+	$('#nomeEstacionameto').html(data.Nome);
+	$('#ruaEstacionameto').html(data.Rua);
+	
+	var listaValoresHtml = '';
+	var i = 0;
+	$.each(data.Valores, function(i, valor) {
+		listaValoresHtml += "<tr>";
+		listaValoresHtml += "<td>";
+		listaValoresHtml += valor.Descricao;
+		listaValoresHtml += "</td>";
+		listaValoresHtml += "<td>";
+		listaValoresHtml += valor.Preco;
+		listaValoresHtml += "</td>";
+		listaValoresHtml += "</tr>";
+	
+	})
+	
+	$('#listaValores').html(listaValoresHtml);
+	
+	mapaEstacionamento(data.Latitude,data.Longitude);
+}
 
-            alert("We got a barcode\n" + 
-            "Result: " + result.text + "\n" + 
-            "Format: " + result.format + "\n" + 
-            "Cancelled: " + result.cancelled);  
 
-           console.log("Scanner result: \n" +
-                "text: " + result.text + "\n" +
-                "format: " + result.format + "\n" +
-                "cancelled: " + result.cancelled + "\n");
-            document.getElementById("info").innerHTML = result.text;
-            console.log(result);
-            /*
-            if (args.format == "QR_CODE") {
-                window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
-            }
-            */
+function mapaEstacionamento(lat, lng) {
+  var myLatlng = new google.maps.LatLng(lat, lng);
+  var mapOptions = {
+	zoom: 15,
+	center: myLatlng,
+	mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-        }, function (error) { 
-            console.log("Scanning failed: ", error); 
-        } );
-    }
-};
+  var marker = new google.maps.Marker({
+	  position: myLatlng,
+	  map: map,
+	  title: 'Kwai Burger'
+  });
+}
